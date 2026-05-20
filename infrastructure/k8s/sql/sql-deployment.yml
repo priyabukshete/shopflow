@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sql-server
+  namespace: shopflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sql-server
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: sql-server
+    spec:
+      securityContext:
+        fsGroup: 10001
+      containers:
+        - name: sql-server
+          image: mcr.microsoft.com/mssql/server:2022-latest
+          ports:
+            - containerPort: 1433
+          env:
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: MSSQL_PID
+              value: "Developer"
+            - name: SA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sql-secret
+                  key: SA_PASSWORD
+          volumeMounts:
+            - name: sql-data
+              mountPath: /var/opt/mssql
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "500m"
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
+      volumes:
+        - name: sql-data
+          persistentVolumeClaim:
+            claimName: sql-data-pvc

@@ -108,6 +108,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "orders", "orders", "{C5AF6F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopFlow.Inventory.API", "services\ShopFlow.Inventory\ShopFlow.Inventory.API\ShopFlow.Inventory.API.csproj", "{6ABB3122-0CA8-4EF8-986A-66066531A759}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{7ADA1C8D-BD8F-4866-A9C7-927EB3E1F3C5}"
+	ProjectSection(SolutionItems) = preProject
+		infrastructure\k8s\sql\sql-deployment.yml = infrastructure\k8s\sql\sql-deployment.yml
+		infrastructure\k8s\sql\sql-pvc.yml = infrastructure\k8s\sql\sql-pvc.yml
+		infrastructure\k8s\sql\sql-secret.yml = infrastructure\k8s\sql\sql-secret.yml
+		infrastructure\k8s\sql\sql-service.yml = infrastructure\k8s\sql\sql-service.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -357,6 +365,7 @@ Global
 		{58B6D780-3489-46A7-9494-9F0CE327DE52} = {88795FBB-3F68-40C4-A8EB-35749AB12A93}
 		{C5AF6F14-9756-466B-A22E-77FABFB9DA17} = {A85D73A7-1EAF-44FB-A1F2-DB83BD7E0B3B}
 		{6ABB3122-0CA8-4EF8-986A-66066531A759} = {7C639EA3-98EF-4348-8DBA-B0BB4BC3B25C}
+		{7ADA1C8D-BD8F-4866-A9C7-927EB3E1F3C5} = {A85D73A7-1EAF-44FB-A1F2-DB83BD7E0B3B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FA274242-5F8F-47E9-933B-A550D685EA7A}
