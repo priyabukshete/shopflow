@@ -116,6 +116,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{7ADA1C8D-BD8
 		infrastructure\k8s\sql\sql-service.yml = infrastructure\k8s\sql\sql-service.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{E3FE9BB4-D77D-4CFD-8024-32B9E8AE1BEE}"
+	ProjectSection(SolutionItems) = preProject
+		infrastructure\k8s\frontend\k8s-deployment.yml = infrastructure\k8s\frontend\k8s-deployment.yml
+		infrastructure\k8s\frontend\k8s-service.yml = infrastructure\k8s\frontend\k8s-service.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -366,6 +372,7 @@ Global
 		{C5AF6F14-9756-466B-A22E-77FABFB9DA17} = {A85D73A7-1EAF-44FB-A1F2-DB83BD7E0B3B}
 		{6ABB3122-0CA8-4EF8-986A-66066531A759} = {7C639EA3-98EF-4348-8DBA-B0BB4BC3B25C}
 		{7ADA1C8D-BD8F-4866-A9C7-927EB3E1F3C5} = {A85D73A7-1EAF-44FB-A1F2-DB83BD7E0B3B}
+		{E3FE9BB4-D77D-4CFD-8024-32B9E8AE1BEE} = {A85D73A7-1EAF-44FB-A1F2-DB83BD7E0B3B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FA274242-5F8F-47E9-933B-A550D685EA7A}
