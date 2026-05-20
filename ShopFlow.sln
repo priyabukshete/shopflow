@@ -57,9 +57,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k8s", "k8s", "{A85D73A7-1EA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{809750B4-1C42-4C17-9230-F482F02C1C96}"
 	ProjectSection(SolutionItems) = preProject
+		infrastructure\docker\frontend.Dockerfile = infrastructure\docker\frontend.Dockerfile
 		infrastructure\docker\gateway.Dockerfile = infrastructure\docker\gateway.Dockerfile
 		infrastructure\docker\identity.Dockerfile = infrastructure\docker\identity.Dockerfile
 		infrastructure\docker\inventory.Dockerfile = infrastructure\docker\inventory.Dockerfile
+		infrastructure\docker\nginx.conf = infrastructure\docker\nginx.conf
 		infrastructure\docker\notifications.Dockerfile = infrastructure\docker\notifications.Dockerfile
 		infrastructure\docker\orders.Dockerfile = infrastructure\docker\orders.Dockerfile
 	EndProjectSection
