@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orders-config
+  namespace: shopflow
+data:
+  JWT_ISSUER: "shopflow.com"
+  JWT_AUDIENCE: "shopflow.com"
+  KAFKA_BOOTSTRAP: "kafka.kafka.svc.cluster.local:9092"

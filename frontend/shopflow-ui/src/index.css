@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Backgrounds */
+  --color-cream: #FAF7F2;
+  --color-ink: #1A1814;
+  
+  /* Swiss accent palette - subtle, premium */
+  --color-gold: #B8954A;
+  --color-gold-soft: #E8D9B5;
+  --color-sage: #7B8B6F;
+  --color-sage-soft: #D6DDD0;
+  --color-terra: #C97B5E;
+  --color-terra-soft: #F0D9CE;
+  --color-navy: #2D3548;
+  --color-navy-soft: #D8DBE0;
+  
+  /* Typography */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg-modal: #FFFFFF;
+}
+
+.dark {
+  --bg-modal: #2A2620;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.dark body {
+  background: var(--color-ink);
+  color: var(--color-cream);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+}
+
+.text-muted {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.dark .text-muted {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Card with gold accent on hover */
+.card {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  border-color: var(--color-gold);
+}
+
+.dark .card {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.dark .card:hover {
+  border-color: var(--color-gold);
+}
+
+/* Active sidebar link with gold accent */
+.nav-active {
+  position: relative;
+  background: rgba(184, 149, 74, 0.08);
+  color: var(--color-gold);
+}
+
+.nav-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 25%;
+  bottom: 25%;
+  width: 3px;
+  background: var(--color-gold);
+  border-radius: 0 2px 2px 0;
+}
+
+/* Dark mode dropdown fix */
+.dark select {
+  color-scheme: dark;
+}
+
+select option {
+  background: var(--bg-modal);
+  color: inherit;
+}
+
+/* Status colors */
+.text-success { color: var(--color-sage); }
+.text-warning { color: var(--color-terra); }
+.text-info    { color: var(--color-gold); }
+
+.bg-success-soft { background: var(--color-sage-soft); color: var(--color-sage); }
+.bg-warning-soft { background: var(--color-terra-soft); color: var(--color-terra); }
+.bg-info-soft    { background: var(--color-gold-soft); color: var(--color-gold); }
+
+.dark .bg-success-soft { background: rgba(123, 139, 111, 0.15); color: var(--color-sage); }
+.dark .bg-warning-soft { background: rgba(201, 123, 94, 0.15); color: var(--color-terra); }
+.dark .bg-info-soft    { background: rgba(184, 149, 74, 0.15); color: var(--color-gold); }
