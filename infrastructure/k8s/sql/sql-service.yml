@@ -9,4 +9,5 @@ spec:
   ports:
     - port: 1433
       targetPort: 1433
-  type: ClusterIP
+      nodePort: 31433
+  type: NodePort
