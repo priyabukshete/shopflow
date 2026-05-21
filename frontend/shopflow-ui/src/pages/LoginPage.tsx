@@ -7,6 +7,22 @@ import { useAuth } from '../contexts/AuthContext'
 import { authApi } from '../api/authApi'
 
 export function LoginPage() {
+
+  const demoAccounts = [
+    {
+      label: 'Manager',
+      email: 'demo.manager@shopflow.ch',
+      password: 'demo@123',
+      description: 'Full access except user management',
+    },
+    {
+      label: 'Cashier',
+      email: 'demo.cashier@shopflow.ch',
+      password: 'demo@123',
+      description: 'POS & orders only',
+    },
+  ]
+
   const navigate = useNavigate()
   const { theme, toggleTheme } = useTheme()
   const { t, i18n } = useTranslation()
@@ -19,6 +35,11 @@ export function LoginPage() {
   const toggleLanguage = () => {
     const newLang = i18n.language === 'de' ? 'en' : 'de'
     i18n.changeLanguage(newLang)
+  }
+
+  const fillDemoCredentials = (demoEmail: string, demoPassword: string) => {
+    setEmail(demoEmail)
+    setPassword(demoPassword)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,7 +59,7 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 relative">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-6 relative">
       {/* Top right controls */}
       <div className="absolute top-6 right-6 flex gap-2">
         <button
@@ -58,8 +79,8 @@ export function LoginPage() {
 
       <div className="w-full max-w-md">
         {/* Logo / Title */}
-        <div className="text-center mb-12">
-          <h1 className="text-6xl mb-2" style={{ fontFamily: 'var(--font-serif)' }}>
+        <div className="text-center mb-8">
+          <h1 className="text-5xl mb-2" style={{ fontFamily: 'var(--font-serif)' }}>
             {t('login.title')}
           </h1>
           <div className="h-px w-12 mx-auto my-4 bg-current opacity-20" />
@@ -120,7 +141,37 @@ export function LoginPage() {
           </button>
         </form>
 
-        <div className="text-center text-muted text-xs mt-8">
+        {/* Demo credentials box for recruiters */}
+        <div className="mt-6 p-4 border border-[var(--color-gold)]/30 rounded-lg bg-[var(--color-gold)]/5">
+          <p className="text-xs uppercase tracking-widest text-center text-muted mb-1">
+            🎭 {t('login.tryDemo', 'Try the demo')}
+          </p>
+          <p className="text-xs text-center text-muted mb-4 opacity-70">
+            {t('login.tryDemoHint', 'Click a role to auto-fill credentials')}
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            {demoAccounts.map((account) => (
+              <button
+                key={account.label}
+                type="button"
+                onClick={() => fillDemoCredentials(account.email, account.password)}
+                className="p-3 border border-current/15 rounded-md hover:border-[var(--color-gold)] hover:bg-[var(--color-gold)]/10 transition-all text-left group"
+              >
+                <p
+                  className="text-sm font-medium mb-1"
+                  style={{ fontFamily: 'var(--font-serif)' }}
+                >
+                  {account.label}
+                </p>
+                <p className="text-[10px] text-muted leading-tight">
+                  {account.description}
+                </p>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="text-center text-muted text-xs mt-6">
           <p className="mb-1">© 2026 ShopFlow</p>
           <div className="h-px w-8 bg-current opacity-20 mx-auto my-2" />
           <p className="uppercase tracking-widest" style={{ fontFamily: 'var(--font-serif)' }}>

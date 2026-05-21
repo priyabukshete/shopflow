@@ -14,13 +14,13 @@ interface AppLayoutProps {
 }
 
 const navigationConfig = [
-  { key: 'dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { key: 'pos',       path: '/pos',       icon: ShoppingBag },
-  { key: 'orders',    path: '/orders',    icon: ClipboardList },
-  { key: 'products',  path: '/products',  icon: Package },
-  { key: 'stock',     path: '/stock',     icon: ArrowLeftRight },
-  { key: 'reports',   path: '/reports',   icon: BarChart3 },
-  { key: 'users',     path: '/users',     icon: Users },
+  { key: 'dashboard', path: '/dashboard', icon: LayoutDashboard, roles: ['Admin', 'Manager'] },
+  { key: 'pos',       path: '/pos',       icon: ShoppingBag,     roles: ['Admin', 'Manager', 'Cashier'] },
+  { key: 'orders',    path: '/orders',    icon: ClipboardList,   roles: ['Admin', 'Manager', 'Cashier'] },
+  { key: 'products',  path: '/products',  icon: Package,         roles: ['Admin', 'Manager'] },
+  { key: 'stock',     path: '/stock',     icon: ArrowLeftRight,  roles: ['Admin', 'Manager'] },
+  { key: 'reports',   path: '/reports',   icon: BarChart3,       roles: ['Admin', 'Manager'] },
+  { key: 'users',     path: '/users',     icon: Users,           roles: ['Admin'] },
 ]
 
 export function AppLayout({ children }: AppLayoutProps) {
@@ -81,7 +81,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           w-64 h-screen z-50
           border-r border-current/10
           flex flex-col overflow-y-auto
-          bg-[var(--color-bg,#fdfbf6)]
+          bg-[var(--color-cream)] dark:bg-[var(--color-ink)]
           transition-transform duration-300 ease-in-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
           md:translate-x-0
@@ -108,7 +108,9 @@ export function AppLayout({ children }: AppLayoutProps) {
 
         {/* Navigation */}
         <nav className="flex-1 p-4">
-          {navigationConfig.map((item) => {
+          {navigationConfig
+            .filter((item) => user?.role && item.roles.includes(user.role))
+            .map((item) => {
             const Icon = item.icon
             const isActive = location.pathname === item.path
             return (
