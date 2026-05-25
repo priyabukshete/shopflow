@@ -118,3 +118,50 @@ select option {
 .dark .bg-success-soft { background: rgba(123, 139, 111, 0.15); color: var(--color-sage); }
 .dark .bg-warning-soft { background: rgba(201, 123, 94, 0.15); color: var(--color-terra); }
 .dark .bg-info-soft    { background: rgba(184, 149, 74, 0.15); color: var(--color-gold); }
+
+/* ============================================
+   Custom scrollbar styling - Swiss Editorial
+   Thin, subtle, matches the cream/ink palette
+   ============================================ */
+
+/* Width and height */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* Track (background) - transparent */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Thumb (the draggable part) - subtle gold-tinted */
+::-webkit-scrollbar-thumb {
+  background: rgba(184, 149, 74, 0.25);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+/* Thumb on hover - slightly more visible */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(184, 149, 74, 0.5);
+}
+
+/* Dark mode adjustments */
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(184, 149, 74, 0.3);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(184, 149, 74, 0.6);
+}
+
+/* Firefox (different syntax) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(184, 149, 74, 0.25) transparent;
+}
+
+.dark * {
+  scrollbar-color: rgba(184, 149, 74, 0.3) transparent;
+}

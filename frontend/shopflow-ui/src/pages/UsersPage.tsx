@@ -35,7 +35,7 @@ export function UsersPage() {
 
   const filteredUsers = users?.filter(u => {
     const fullName = `${u.firstName} ${u.lastName}`.toLowerCase()
-    const matchesSearch = 
+    const matchesSearch =
       fullName.includes(searchTerm.toLowerCase()) ||
       u.email.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesRole = roleFilter === 'all' || u.role === roleFilter
@@ -136,75 +136,77 @@ export function UsersPage() {
         {filteredUsers.length === 0 ? (
           <p className="text-center text-muted py-12">{t('common.loading')}</p>
         ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-current/10">
-                <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('common.name')}</th>
-                <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('users.email')}</th>
-                <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('users.role')}</th>
-                <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('users.joined')}</th>
-                <th className="text-center text-xs uppercase tracking-wider text-muted py-3">{t('common.status')}</th>
-                <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('common.actions')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredUsers.map(u => {
-                const roleColors: Record<string, string> = {
-                  Admin:   'bg-info-soft text-info',
-                  Manager: 'bg-success-soft text-success',
-                  Cashier: 'bg-current/5 text-muted',
-                }
-                const roleColor = roleColors[u.role] ?? 'bg-current/5 text-muted'
+          <div className="overflow-x-auto max-h-[500px] overflow-y-auto pr-3">
+            <table className="w-full min-w-[700px]">
+              <thead className="sticky top-0 bg-[var(--color-cream)] dark:bg-[var(--color-ink)] z-10">
+                <tr className="border-b border-current/10">
+                  <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('common.name')}</th>
+                  <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('users.email')}</th>
+                  <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('users.role')}</th>
+                  <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('users.joined')}</th>
+                  <th className="text-center text-xs uppercase tracking-wider text-muted py-3">{t('common.status')}</th>
+                  <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('common.actions')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredUsers.map(u => {
+                  const roleColors: Record<string, string> = {
+                    Admin: 'bg-info-soft text-info',
+                    Manager: 'bg-success-soft text-success',
+                    Cashier: 'bg-current/5 text-muted',
+                  }
+                  const roleColor = roleColors[u.role] ?? 'bg-current/5 text-muted'
 
-                return (
-                  <tr key={u.id} className="border-b border-current/5 hover:bg-current/[0.02]">
-                    <td className="py-4 font-medium">{u.firstName} {u.lastName}</td>
-                    <td className="py-4 text-sm text-muted">{u.email}</td>
-                    <td className="py-4">
-                      <span className={`px-2 py-1 rounded text-xs uppercase tracking-wider ${roleColor}`}>
-                        {u.role}
-                      </span>
-                    </td>
-                    <td className="py-4 text-sm text-muted">
-                      {new Date(u.createdAt).toLocaleDateString(locale, {
-                        day: '2-digit', month: 'short', year: 'numeric',
-                      })}
-                    </td>
-                    <td className="py-4 text-center">
-                      {u.isActive ? (
-                        <span className="px-2 py-1 rounded text-xs uppercase tracking-wider bg-success-soft text-success">
-                          {t('common.active')}
+                  return (
+                    <tr key={u.id} className="border-b border-current/5 hover:bg-current/[0.02]">
+                      <td className="py-4 font-medium">{u.firstName} {u.lastName}</td>
+                      <td className="py-4 text-sm text-muted">{u.email}</td>
+                      <td className="py-4">
+                        <span className={`px-2 py-1 rounded text-xs uppercase tracking-wider ${roleColor}`}>
+                          {u.role}
                         </span>
-                      ) : (
-                        <span className="px-2 py-1 rounded text-xs uppercase tracking-wider bg-warning-soft text-warning">
-                          {t('common.inactive')}
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-4 text-right">
-                      <button
-                        onClick={() => setStatusMutation.mutate({ userId: u.id, isActive: !u.isActive })}
-                        disabled={setStatusMutation.isPending}
-                        className="inline-flex items-center gap-1 px-3 py-1 text-xs text-muted hover:text-current border border-current/20 hover:border-[var(--color-gold)] rounded transition-all disabled:opacity-50"
-                      >
+                      </td>
+                      <td className="py-4 text-sm text-muted">
+                        {new Date(u.createdAt).toLocaleDateString(locale, {
+                          day: '2-digit', month: 'short', year: 'numeric',
+                        })}
+                      </td>
+                      <td className="py-4 text-center">
                         {u.isActive ? (
-                          <>
-                            <ShieldOff className="w-3 h-3" />
-                            {t('users.deactivate')}
-                          </>
+                          <span className="px-2 py-1 rounded text-xs uppercase tracking-wider bg-success-soft text-success">
+                            {t('common.active')}
+                          </span>
                         ) : (
-                          <>
-                            <Shield className="w-3 h-3" />
-                            {t('users.activate')}
-                          </>
+                          <span className="px-2 py-1 rounded text-xs uppercase tracking-wider bg-warning-soft text-warning">
+                            {t('common.inactive')}
+                          </span>
                         )}
-                      </button>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+                      </td>
+                      <td className="py-4 text-right">
+                        <button
+                          onClick={() => setStatusMutation.mutate({ userId: u.id, isActive: !u.isActive })}
+                          disabled={setStatusMutation.isPending}
+                          className="inline-flex items-center gap-1 px-3 py-1 text-xs text-muted hover:text-current border border-current/20 hover:border-[var(--color-gold)] rounded transition-all disabled:opacity-50"
+                        >
+                          {u.isActive ? (
+                            <>
+                              <ShieldOff className="w-3 h-3" />
+                              {t('users.deactivate')}
+                            </>
+                          ) : (
+                            <>
+                              <Shield className="w-3 h-3" />
+                              {t('users.activate')}
+                            </>
+                          )}
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
@@ -246,7 +248,7 @@ function AddUserModal({ isLoading, onSubmit, onClose }: {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div 
+      <div
         className="p-8 max-w-lg w-full rounded-xl border border-current/10 shadow-2xl max-h-[90vh] overflow-y-auto"
         style={{ background: 'var(--bg-modal)' }}
       >
@@ -265,7 +267,7 @@ function AddUserModal({ isLoading, onSubmit, onClose }: {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs uppercase tracking-wider text-muted mb-2">{t('users.firstName')}</label>
               <input

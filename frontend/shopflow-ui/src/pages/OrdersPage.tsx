@@ -94,7 +94,7 @@ export function OrdersPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard icon={ClipboardList} label={t('orders.totalOrders')} value={stats.total} color="navy" />
         <StatCard icon={Clock} label={t('orders.pending')} value={stats.pending} color="terra" highlight={stats.pending > 0} />
         <StatCard icon={Check} label={t('orders.confirmed')} value={stats.confirmedToday} color="sage" suffix={t('common.today')} />
@@ -155,103 +155,105 @@ export function OrdersPage() {
         ) : filteredOrders.length === 0 ? (
           <p className="text-center text-muted py-12">{t('orders.noOrdersMatch')}</p>
         ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-current/10">
-                <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('orders.orderNumber')}</th>
-                <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('orders.customer')}</th>
-                <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('orders.orderType')}</th>
-                <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('orders.itemCount')}</th>
-                <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('orders.total')}</th>
-                <th className="text-center text-xs uppercase tracking-wider text-muted py-3">{t('orders.status')}</th>
-                <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('orders.createdAt')}</th>
-                <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('common.actions')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredOrders.map(o => {
-                const statusColors: Record<string, string> = {
-                  Pending:   'bg-warning-soft text-warning',
-                  Confirmed: 'bg-success-soft text-success',
-                  Cancelled: 'bg-current/5 text-muted',
-                  Completed: 'bg-info-soft text-info',
-                }
-                const statusColor = statusColors[o.status] ?? 'bg-current/5 text-muted'
+          <div className="overflow-x-auto max-h-[500px] overflow-y-auto pr-3 [mask-image:linear-gradient(to_right,black_calc(100%-30px),transparent)] sm:[mask-image:none]">
+            <table className="w-full min-w-[700px]">
+              <thead className="sticky top-0 bg-[var(--color-cream)] dark:bg-[var(--color-ink)] z-10">
+                <tr className="border-b border-current/10">
+                  <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('orders.orderNumber')}</th>
+                  <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('orders.customer')}</th>
+                  <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('orders.orderType')}</th>
+                  <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('orders.itemCount')}</th>
+                  <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('orders.total')}</th>
+                  <th className="text-center text-xs uppercase tracking-wider text-muted py-3">{t('orders.status')}</th>
+                  <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('orders.createdAt')}</th>
+                  <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('common.actions')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredOrders.map(o => {
+                  const statusColors: Record<string, string> = {
+                    Pending: 'bg-warning-soft text-warning',
+                    Confirmed: 'bg-success-soft text-success',
+                    Cancelled: 'bg-current/5 text-muted',
+                    Completed: 'bg-info-soft text-info',
+                  }
+                  const statusColor = statusColors[o.status] ?? 'bg-current/5 text-muted'
 
-                const typeIcon = {
-                  WalkIn: Wallet,
-                  Pickup: ShoppingBag,
-                  Delivery: Truck,
-                }[o.type]
-                const TypeIcon = typeIcon
+                  const typeIcon = {
+                    WalkIn: Wallet,
+                    Pickup: ShoppingBag,
+                    Delivery: Truck,
+                  }[o.type]
+                  const TypeIcon = typeIcon
 
-                return (
-                  <tr key={o.id} className="border-b border-current/5 hover:bg-current/[0.02]">
-                    <td className="py-4 font-medium" style={{ fontFamily: 'var(--font-serif)' }}>
-                      {o.orderNumber}
-                    </td>
-                    <td className="py-4 text-sm">
-                      {o.customerName ?? <span className="text-muted">—</span>}
-                      {o.customerPhone && (
-                        <p className="text-xs text-muted mt-1">{o.customerPhone}</p>
-                      )}
-                    </td>
-                    <td className="py-4">
-                      <span className="inline-flex items-center gap-1 text-xs text-muted">
-                        <TypeIcon className="w-3 h-3" />
-                        {t(`orders.${o.type === 'WalkIn' ? 'walkIn' : o.type.toLowerCase()}`)}
-                      </span>
-                    </td>
-                    <td className="py-4 text-right text-sm">{o.items.length}</td>
-                    <td className="py-4 text-right font-medium">CHF {o.totalAmount.toFixed(2)}</td>
-                    <td className="py-4 text-center">
-                      <span className={`px-2 py-1 rounded text-xs uppercase tracking-wider ${statusColor}`}>
-                        {t(`orders.${o.status.toLowerCase()}`)}
-                      </span>
-                    </td>
-                    <td className="py-4 text-sm text-muted whitespace-nowrap">
-                      {new Date(o.createdAt).toLocaleString(locale, {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        day: '2-digit',
-                        month: 'short',
-                      })}
-                    </td>
-                    <td className="py-4 text-right">
-                      <div className="inline-flex gap-1">
-                        <button
-                          onClick={() => setViewingOrder(o)}
-                          className="inline-flex items-center gap-1 px-2 py-1 text-xs text-muted hover:text-current border border-current/20 hover:border-[var(--color-gold)] rounded transition-all"
-                          title={t('orders.viewDetails')}
-                        >
-                          <Eye className="w-3 h-3" />
-                        </button>
-                        {o.status === 'Pending' && (
-                          <button
-                            onClick={() => confirmMutation.mutate(o.id)}
-                            disabled={confirmMutation.isPending}
-                            className="inline-flex items-center gap-1 px-2 py-1 text-xs text-success border border-current/20 hover:border-[var(--color-sage)] rounded transition-all"
-                            title={t('orders.confirm')}
-                          >
-                            <Check className="w-3 h-3" />
-                          </button>
+                  return (
+                    <tr key={o.id} className="border-b border-current/5 hover:bg-current/[0.02]">
+                      <td className="py-4 font-medium" style={{ fontFamily: 'var(--font-serif)' }}>
+                        {o.orderNumber}
+                      </td>
+                      <td className="py-4 text-sm">
+                        {o.customerName ?? <span className="text-muted">—</span>}
+                        {o.customerPhone && (
+                          <p className="text-xs text-muted mt-1">{o.customerPhone}</p>
                         )}
-                        {(o.status === 'Pending' || o.status === 'Confirmed') && (
+                      </td>
+                      <td className="py-4">
+                        <span className="inline-flex items-center gap-1 text-xs text-muted">
+                          <TypeIcon className="w-3 h-3" />
+                          {t(`orders.${o.type === 'WalkIn' ? 'walkIn' : o.type.toLowerCase()}`)}
+                        </span>
+                      </td>
+                      <td className="py-4 text-right text-sm">{o.items.length}</td>
+                      <td className="py-4 text-right font-medium">CHF {o.totalAmount.toFixed(2)}</td>
+                      <td className="py-4 text-center">
+                        <span className={`px-2 py-1 rounded text-xs uppercase tracking-wider ${statusColor}`}>
+                          {t(`orders.${o.status.toLowerCase()}`)}
+                        </span>
+                      </td>
+                      <td className="py-4 text-sm text-muted whitespace-nowrap">
+                        {new Date(o.createdAt).toLocaleString(locale, {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          day: '2-digit',
+                          month: 'short',
+                        })}
+                      </td>
+                      <td className="py-4 text-right">
+                        <div className="inline-flex gap-1">
                           <button
-                            onClick={() => setCancellingOrder(o)}
-                            className="inline-flex items-center gap-1 px-2 py-1 text-xs text-warning border border-current/20 hover:border-[var(--color-terra)] rounded transition-all"
-                            title={t('orders.cancel')}
+                            onClick={() => setViewingOrder(o)}
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs text-muted hover:text-current border border-current/20 hover:border-[var(--color-gold)] rounded transition-all"
+                            title={t('orders.viewDetails')}
                           >
-                            <XCircle className="w-3 h-3" />
+                            <Eye className="w-3 h-3" />
                           </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+                          {o.status === 'Pending' && (
+                            <button
+                              onClick={() => confirmMutation.mutate(o.id)}
+                              disabled={confirmMutation.isPending}
+                              className="inline-flex items-center gap-1 px-2 py-1 text-xs text-success border border-current/20 hover:border-[var(--color-sage)] rounded transition-all"
+                              title={t('orders.confirm')}
+                            >
+                              <Check className="w-3 h-3" />
+                            </button>
+                          )}
+                          {(o.status === 'Pending' || o.status === 'Confirmed') && (
+                            <button
+                              onClick={() => setCancellingOrder(o)}
+                              className="inline-flex items-center gap-1 px-2 py-1 text-xs text-warning border border-current/20 hover:border-[var(--color-terra)] rounded transition-all"
+                              title={t('orders.cancel')}
+                            >
+                              <XCircle className="w-3 h-3" />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
@@ -291,10 +293,10 @@ function StatCard({ icon: Icon, label, value, color, highlight, suffix, isCurren
   isCurrency?: boolean
 }) {
   const colorMap = {
-    gold:  'text-info bg-info-soft',
-    sage:  'text-success bg-success-soft',
+    gold: 'text-info bg-info-soft',
+    sage: 'text-success bg-success-soft',
     terra: 'text-warning bg-warning-soft',
-    navy:  'text-muted bg-current/5',
+    navy: 'text-muted bg-current/5',
   }
 
   return (
@@ -330,7 +332,7 @@ function OrderDetailsModal({ order, onClose }: { order: Order; onClose: () => vo
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div 
+      <div
         className="p-8 max-w-2xl w-full rounded-xl border border-current/10 shadow-2xl max-h-[90vh] overflow-y-auto"
         style={{ background: 'var(--bg-modal)' }}
       >
@@ -349,26 +351,26 @@ function OrderDetailsModal({ order, onClose }: { order: Order; onClose: () => vo
         </div>
 
         {/* Info grid */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <InfoField label={t('orders.status')} value={order.status} />
           <InfoField label={t('orders.orderType')} value={order.type} />
           <InfoField label={t('orders.customer')} value={order.customerName ?? '—'} />
           <InfoField label={t('orders.customerPhone')} value={order.customerPhone ?? '—'} />
-          <InfoField 
-            label={t('orders.createdAt')} 
-            value={new Date(order.createdAt).toLocaleString(locale)} 
+          <InfoField
+            label={t('orders.createdAt')}
+            value={new Date(order.createdAt).toLocaleString(locale)}
           />
           <InfoField label={t('orders.createdBy')} value={order.createdBy} />
           {order.confirmedAt && (
-            <InfoField 
-              label={t('orders.confirmedAt')} 
-              value={new Date(order.confirmedAt).toLocaleString(locale)} 
+            <InfoField
+              label={t('orders.confirmedAt')}
+              value={new Date(order.confirmedAt).toLocaleString(locale)}
             />
           )}
           {order.cancelledAt && (
-            <InfoField 
-              label={t('orders.cancelledAt')} 
-              value={new Date(order.cancelledAt).toLocaleString(locale)} 
+            <InfoField
+              label={t('orders.cancelledAt')}
+              value={new Date(order.cancelledAt).toLocaleString(locale)}
             />
           )}
         </div>
@@ -386,37 +388,38 @@ function OrderDetailsModal({ order, onClose }: { order: Order; onClose: () => vo
         <h4 className="text-sm uppercase tracking-wider text-muted mb-3">
           {t('orders.itemDetails')}
         </h4>
-        <table className="w-full mb-6">
-          <thead>
-            <tr className="border-b border-current/10">
-              <th className="text-left text-xs uppercase tracking-wider text-muted py-2">{t('dashboard.product')}</th>
-              <th className="text-right text-xs uppercase tracking-wider text-muted py-2">{t('common.quantity')}</th>
-              <th className="text-right text-xs uppercase tracking-wider text-muted py-2">{t('orders.unitPrice')}</th>
-              <th className="text-right text-xs uppercase tracking-wider text-muted py-2">{t('orders.lineTotal')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {order.items.map(item => (
-              <tr key={item.id} className="border-b border-current/5">
-                <td className="py-2 font-medium">{item.productName}</td>
-                <td className="py-2 text-right">{item.quantity}</td>
-                <td className="py-2 text-right">CHF {item.unitPrice.toFixed(2)}</td>
-                <td className="py-2 text-right font-medium">CHF {item.lineTotal.toFixed(2)}</td>
+        <div className="overflow-x-auto mb-6">
+          <table className="w-full min-w-[500px]">
+            <thead>
+              <tr className="border-b border-current/10">
+                <th className="text-left text-xs uppercase tracking-wider text-muted py-2">{t('dashboard.product')}</th>
+                <th className="text-right text-xs uppercase tracking-wider text-muted py-2">{t('common.quantity')}</th>
+                <th className="text-right text-xs uppercase tracking-wider text-muted py-2">{t('orders.unitPrice')}</th>
+                <th className="text-right text-xs uppercase tracking-wider text-muted py-2">{t('orders.lineTotal')}</th>
               </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colSpan={3} className="py-3 text-right text-sm uppercase tracking-wider">
-                {t('orders.total')}
-              </td>
-              <td className="py-3 text-right text-2xl" style={{ fontFamily: 'var(--font-serif)' }}>
-                CHF {order.totalAmount.toFixed(2)}
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-
+            </thead>
+            <tbody>
+              {order.items.map(item => (
+                <tr key={item.id} className="border-b border-current/5">
+                  <td className="py-2 font-medium">{item.productName}</td>
+                  <td className="py-2 text-right">{item.quantity}</td>
+                  <td className="py-2 text-right">CHF {item.unitPrice.toFixed(2)}</td>
+                  <td className="py-2 text-right font-medium">CHF {item.lineTotal.toFixed(2)}</td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan={3} className="py-3 text-right text-sm uppercase tracking-wider">
+                  {t('orders.total')}
+                </td>
+                <td className="py-3 text-right text-2xl" style={{ fontFamily: 'var(--font-serif)' }}>
+                  CHF {order.totalAmount.toFixed(2)}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
         <button
           onClick={onClose}
           className="w-full py-3 border border-current/30 hover:border-current transition-all uppercase text-xs tracking-widest"
@@ -462,7 +465,7 @@ function CancelOrderModal({ order, isLoading, onSubmit, onClose }: {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div 
+      <div
         className="p-8 max-w-md w-full rounded-xl border border-current/10 shadow-2xl"
         style={{ background: 'var(--bg-modal)' }}
       >
@@ -593,7 +596,7 @@ function PlaceOrderModal({ isLoading, onSubmit, onClose }: {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div 
+      <div
         className="p-8 max-w-2xl w-full rounded-xl border border-current/10 shadow-2xl max-h-[90vh] overflow-y-auto"
         style={{ background: 'var(--bg-modal)' }}
       >
@@ -617,17 +620,16 @@ function PlaceOrderModal({ isLoading, onSubmit, onClose }: {
             <label className="block text-xs uppercase tracking-wider text-muted mb-2">
               {t('orders.selectCustomerType')}
             </label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               {(['WalkIn', 'Pickup', 'Delivery'] as const).map(type => (
                 <button
                   key={type}
                   type="button"
                   onClick={() => setOrderType(type)}
-                  className={`p-3 rounded-md text-sm transition-all border ${
-                    orderType === type
-                      ? 'bg-[var(--color-gold)] text-white border-[var(--color-gold)]'
-                      : 'border-current/20 hover:border-current/40'
-                  }`}
+                  className={`p-3 rounded-md text-sm transition-all border ${orderType === type
+                    ? 'bg-[var(--color-gold)] text-white border-[var(--color-gold)]'
+                    : 'border-current/20 hover:border-current/40'
+                    }`}
                 >
                   <p className="font-medium">{t(`orders.${type === 'WalkIn' ? 'walkIn' : type.toLowerCase()}`)}</p>
                   <p className="text-xs mt-1 opacity-80">
@@ -639,7 +641,7 @@ function PlaceOrderModal({ isLoading, onSubmit, onClose }: {
           </div>
 
           {/* Customer info */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs uppercase tracking-wider text-muted mb-2">
                 {t('orders.customerNameOptional')}

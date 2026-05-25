@@ -17,11 +17,11 @@ interface MovementOption {
 }
 
 const movementOptions: MovementOption[] = [
-  { type: 'delivery',   labelKey: 'stock.delivery',   descKey: 'stock.deliveryDesc',   icon: Truck,        color: 'sage'  },
-  { type: 'production', labelKey: 'stock.production', descKey: 'stock.productionDesc', icon: Wheat,        color: 'gold'  },
-  { type: 'sale',       labelKey: 'stock.sale',       descKey: 'stock.saleDesc',       icon: ShoppingCart, color: 'navy'  },
-  { type: 'waste',      labelKey: 'stock.waste',      descKey: 'stock.wasteDesc',      icon: Trash2,       color: 'terra' },
-  { type: 'return',     labelKey: 'stock.return',     descKey: 'stock.returnDesc',     icon: RotateCcw,    color: 'navy'  },
+  { type: 'delivery', labelKey: 'stock.delivery', descKey: 'stock.deliveryDesc', icon: Truck, color: 'sage' },
+  { type: 'production', labelKey: 'stock.production', descKey: 'stock.productionDesc', icon: Wheat, color: 'gold' },
+  { type: 'sale', labelKey: 'stock.sale', descKey: 'stock.saleDesc', icon: ShoppingCart, color: 'navy' },
+  { type: 'waste', labelKey: 'stock.waste', descKey: 'stock.wasteDesc', icon: Trash2, color: 'terra' },
+  { type: 'return', labelKey: 'stock.return', descKey: 'stock.returnDesc', icon: RotateCcw, color: 'navy' },
 ]
 
 export function StockMovementsPage() {
@@ -45,11 +45,11 @@ export function StockMovementsPage() {
   const mutation = useMutation({
     mutationFn: async (data: { type: MovementType; payload: RecordMovementRequest }) => {
       switch (data.type) {
-        case 'delivery':   return inventoryApi.recordDelivery(data.payload)
+        case 'delivery': return inventoryApi.recordDelivery(data.payload)
         case 'production': return inventoryApi.recordProduction(data.payload)
-        case 'sale':       return inventoryApi.recordSale(data.payload)
-        case 'waste':      return inventoryApi.recordWaste(data.payload)
-        case 'return':     return inventoryApi.recordReturn(data.payload)
+        case 'sale': return inventoryApi.recordSale(data.payload)
+        case 'waste': return inventoryApi.recordWaste(data.payload)
+        case 'return': return inventoryApi.recordReturn(data.payload)
         case 'adjustment': return inventoryApi.recordAdjustment(data.payload)
       }
     },
@@ -79,10 +79,10 @@ export function StockMovementsPage() {
         {movementOptions.map((option) => {
           const Icon = option.icon
           const colorMap = {
-            sage:  'text-success bg-success-soft',
-            gold:  'text-info bg-info-soft',
+            sage: 'text-success bg-success-soft',
+            gold: 'text-info bg-info-soft',
             terra: 'text-warning bg-warning-soft',
-            navy:  'text-muted bg-current/5',
+            navy: 'text-muted bg-current/5',
           }
 
           return (
@@ -165,64 +165,66 @@ export function StockMovementsPage() {
           }
 
           return (
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-current/10">
-                  <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('common.time')}</th>
-                  <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.product')}</th>
-                  <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('common.type')}</th>
-                  <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('common.quantity')}</th>
-                  <th className="text-left text-xs uppercase tracking-wider text-muted py-3 pl-4">{t('common.reference')}</th>
-                  <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('common.actions')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredMovements.map(m => {
-                  const typeColors: Record<string, string> = {
-                    Delivery:     'bg-success-soft text-success',
-                    Production:   'bg-info-soft text-info',
-                    Sale:         'bg-current/5 text-muted',
-                    Waste:        'bg-warning-soft text-warning',
-                    Return:       'bg-current/5 text-muted',
-                    Adjustment:   'bg-info-soft text-info',
-                    InitialStock: 'bg-current/5 text-muted',
-                  }
-                  const typeColor = typeColors[m.type] ?? 'bg-current/5 text-muted'
+            <div className="overflow-x-auto max-h-[500px] overflow-y-auto pr-3">
+              <table className="w-full min-w-[700px]">
+                <thead className="sticky top-0 bg-[var(--color-cream)] dark:bg-[var(--color-ink)] z-10">
+                  <tr className="border-b border-current/10">
+                    <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('common.time')}</th>
+                    <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.product')}</th>
+                    <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('common.type')}</th>
+                    <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('common.quantity')}</th>
+                    <th className="text-left text-xs uppercase tracking-wider text-muted py-3 pl-4">{t('common.reference')}</th>
+                    <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('common.actions')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredMovements.map(m => {
+                    const typeColors: Record<string, string> = {
+                      Delivery: 'bg-success-soft text-success',
+                      Production: 'bg-info-soft text-info',
+                      Sale: 'bg-current/5 text-muted',
+                      Waste: 'bg-warning-soft text-warning',
+                      Return: 'bg-current/5 text-muted',
+                      Adjustment: 'bg-info-soft text-info',
+                      InitialStock: 'bg-current/5 text-muted',
+                    }
+                    const typeColor = typeColors[m.type] ?? 'bg-current/5 text-muted'
 
-                  return (
-                    <tr key={m.id} className="border-b border-current/5 hover:bg-current/[0.02]">
-                      <td className="py-3 text-sm text-muted whitespace-nowrap">
-                        {new Date(m.recordedAt).toLocaleString(locale, {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          day: '2-digit',
-                          month: 'short',
-                        })}
-                      </td>
-                      <td className="py-3 font-medium">{m.productName}</td>
-                      <td className="py-3">
-                        <span className={`px-2 py-1 rounded text-xs uppercase tracking-wider ${typeColor}`}>
-                          {m.type}
-                        </span>
-                      </td>
-                      <td className={`py-3 text-right font-medium ${m.quantity > 0 ? 'text-success' : 'text-warning'}`}>
-                        {m.quantity > 0 ? `+${m.quantity}` : m.quantity}
-                      </td>
-                      <td className="py-3 pl-4 text-sm text-muted">{m.reference}</td>
-                      <td className="py-3 text-right">
-                        <button
-                          onClick={() => setAdjustingMovement(m)}
-                          className="inline-flex items-center gap-1 px-3 py-1 text-xs text-muted hover:text-current border border-current/20 hover:border-[var(--color-gold)] rounded transition-all"
-                        >
-                          <Wrench className="w-3 h-3" />
-                          {t('stock.adjust')}
-                        </button>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+                    return (
+                      <tr key={m.id} className="border-b border-current/5 hover:bg-current/[0.02]">
+                        <td className="py-3 text-sm text-muted whitespace-nowrap">
+                          {new Date(m.recordedAt).toLocaleString(locale, {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            day: '2-digit',
+                            month: 'short',
+                          })}
+                        </td>
+                        <td className="py-3 font-medium">{m.productName}</td>
+                        <td className="py-3">
+                          <span className={`px-2 py-1 rounded text-xs uppercase tracking-wider ${typeColor}`}>
+                            {m.type}
+                          </span>
+                        </td>
+                        <td className={`py-3 text-right font-medium ${m.quantity > 0 ? 'text-success' : 'text-warning'}`}>
+                          {m.quantity > 0 ? `+${m.quantity}` : m.quantity}
+                        </td>
+                        <td className="py-3 pl-4 text-sm text-muted">{m.reference}</td>
+                        <td className="py-3 text-right">
+                          <button
+                            onClick={() => setAdjustingMovement(m)}
+                            className="inline-flex items-center gap-1 px-3 py-1 text-xs text-muted hover:text-current border border-current/20 hover:border-[var(--color-gold)] rounded transition-all"
+                          >
+                            <Wrench className="w-3 h-3" />
+                            {t('stock.adjust')}
+                          </button>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
           )
         })()}
       </div>
@@ -285,7 +287,7 @@ function MovementModal({ type, products, isLoading, onSubmit, onClose }: {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div 
+      <div
         className="p-8 max-w-lg w-full rounded-xl border border-current/10 shadow-2xl"
         style={{ background: 'var(--bg-modal)' }}
       >
@@ -402,7 +404,7 @@ function AdjustmentModal({ originalMovement, isLoading, onSubmit, onClose }: {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div 
+      <div
         className="p-8 max-w-lg w-full rounded-xl border border-current/10 shadow-2xl"
         style={{ background: 'var(--bg-modal)' }}
       >

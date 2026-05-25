@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Calendar, TrendingUp, ShoppingCart, AlertCircle, Package } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { 
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, 
-  PieChart, Pie, Cell, LineChart, Line, CartesianGrid, Legend 
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, LineChart, Line, CartesianGrid, Legend
 } from 'recharts'
 import { inventoryApi } from '../api/inventoryApi'
 
@@ -58,10 +58,10 @@ export function ReportsPage() {
     const date = new Date(r.date)
     return {
       day: date.toLocaleDateString(locale, { weekday: 'short', day: '2-digit' }),
-      [t('dashboard.sold')]:      r.products.reduce((sum, p) => sum + p.sold, 0),
+      [t('dashboard.sold')]: r.products.reduce((sum, p) => sum + p.sold, 0),
       [t('dashboard.delivered')]: r.products.reduce((sum, p) => sum + p.delivered, 0),
-      [t('dashboard.produced')]:  r.products.reduce((sum, p) => sum + p.produced, 0),
-      [t('dashboard.wasted')]:    r.products.reduce((sum, p) => sum + p.wasted, 0),
+      [t('dashboard.produced')]: r.products.reduce((sum, p) => sum + p.produced, 0),
+      [t('dashboard.wasted')]: r.products.reduce((sum, p) => sum + p.wasted, 0),
     }
   })
 
@@ -104,7 +104,7 @@ export function ReportsPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 mt-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 mt-3">
             <SummaryCard icon={TrendingUp} label={t('dashboard.delivered')} value={totalDelivered} color="sage" />
             <SummaryCard icon={Package} label={t('dashboard.produced')} value={totalProduced} color="gold" />
             <SummaryCard icon={ShoppingCart} label={t('dashboard.sold')} value={totalSold} color="navy" />
@@ -182,10 +182,10 @@ export function ReportsPage() {
                 <YAxis stroke="currentColor" opacity={0.7} fontSize={12} />
                 <Tooltip contentStyle={{ background: 'var(--bg-modal)', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px' }} />
                 <Legend />
-                <Line type="monotone" dataKey={t('dashboard.sold')}      stroke="#2D3548" strokeWidth={2} dot={{ r: 4 }} />
+                <Line type="monotone" dataKey={t('dashboard.sold')} stroke="#2D3548" strokeWidth={2} dot={{ r: 4 }} />
                 <Line type="monotone" dataKey={t('dashboard.delivered')} stroke="#7B8B6F" strokeWidth={2} dot={{ r: 4 }} />
-                <Line type="monotone" dataKey={t('dashboard.produced')}  stroke="#B8954A" strokeWidth={2} dot={{ r: 4 }} />
-                <Line type="monotone" dataKey={t('dashboard.wasted')}    stroke="#C97B5E" strokeWidth={2} dot={{ r: 4 }} />
+                <Line type="monotone" dataKey={t('dashboard.produced')} stroke="#B8954A" strokeWidth={2} dot={{ r: 4 }} />
+                <Line type="monotone" dataKey={t('dashboard.wasted')} stroke="#C97B5E" strokeWidth={2} dot={{ r: 4 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -195,30 +195,32 @@ export function ReportsPage() {
               <h3 className="text-xl mb-6" style={{ fontFamily: 'var(--font-serif)' }}>
                 {t('reports.perProductBreakdown')}
               </h3>
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-current/10">
-                    <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.product')}</th>
-                    <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.delivered')}</th>
-                    <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.produced')}</th>
-                    <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.sold')}</th>
-                    <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.wasted')}</th>
-                    <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('reports.returned')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {report?.products.map(p => (
-                    <tr key={p.productId} className="border-b border-current/5 hover:bg-current/[0.02]">
-                      <td className="py-3 font-medium">{p.productName}</td>
-                      <td className="py-3 text-right text-success">{p.delivered || '—'}</td>
-                      <td className="py-3 text-right text-info">{p.produced || '—'}</td>
-                      <td className="py-3 text-right text-muted">{p.sold || '—'}</td>
-                      <td className="py-3 text-right text-warning">{p.wasted || '—'}</td>
-                      <td className="py-3 text-right text-muted">{p.returned || '—'}</td>
+              <div className="overflow-x-auto max-h-[500px] overflow-y-auto pr-3">
+                <table className="w-full min-w-[700px]">
+                  <thead className="sticky top-0 bg-[var(--color-cream)] dark:bg-[var(--color-ink)] z-10">
+                    <tr className="border-b border-current/10">
+                      <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.product')}</th>
+                      <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.delivered')}</th>
+                      <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.produced')}</th>
+                      <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.sold')}</th>
+                      <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.wasted')}</th>
+                      <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('reports.returned')}</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {report?.products.map(p => (
+                      <tr key={p.productId} className="border-b border-current/5 hover:bg-current/[0.02]">
+                        <td className="py-3 font-medium">{p.productName}</td>
+                        <td className="py-3 text-right text-success">{p.delivered || '—'}</td>
+                        <td className="py-3 text-right text-info">{p.produced || '—'}</td>
+                        <td className="py-3 text-right text-muted">{p.sold || '—'}</td>
+                        <td className="py-3 text-right text-warning">{p.wasted || '—'}</td>
+                        <td className="py-3 text-right text-muted">{p.returned || '—'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               {report && report.products.every(p => p.sold === 0 && p.delivered === 0 && p.produced === 0 && p.wasted === 0 && p.returned === 0) && (
                 <p className="text-center text-muted py-8">{t('stock.noMovements')}</p>
               )}
@@ -239,17 +241,17 @@ export function ReportsPage() {
   )
 }
 
-function SummaryCard({ icon: Icon, label, value, color }: { 
+function SummaryCard({ icon: Icon, label, value, color }: {
   icon: React.ComponentType<{ className?: string }>
   label: string
   value: number
   color: 'gold' | 'sage' | 'terra' | 'navy'
 }) {
   const colorMap = {
-    gold:  'text-info bg-info-soft',
-    sage:  'text-success bg-success-soft',
+    gold: 'text-info bg-info-soft',
+    sage: 'text-success bg-success-soft',
     terra: 'text-warning bg-warning-soft',
-    navy:  'text-muted bg-current/5',
+    navy: 'text-muted bg-current/5',
   }
 
   return (

@@ -42,7 +42,7 @@ export function ProductsPage() {
   })
 
   const updateProductMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateProductRequest }) => 
+    mutationFn: ({ id, data }: { id: string; data: UpdateProductRequest }) =>
       inventoryApi.updateProduct(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] })
@@ -155,55 +155,57 @@ export function ProductsPage() {
             {products?.length === 0 ? t('dashboard.noProducts') : t('stock.noMatch')}
           </p>
         ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-current/10">
-                <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('common.name')}</th>
-                <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('common.category')}</th>
-                <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('common.price')}</th>
-                <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.inStock')}</th>
-                <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('products.threshold')}</th>
-                <th className="text-center text-xs uppercase tracking-wider text-muted py-3">{t('common.status')}</th>
-                <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('common.actions')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProducts.map(p => (
-                <tr key={p.id} className="border-b border-current/5 hover:bg-current/[0.02]">
-                  <td className="py-4">
-                    <p className="font-medium">{p.name}</p>
-                    <p className="text-xs text-muted mt-1">{p.description}</p>
-                  </td>
-                  <td className="py-4 text-sm text-muted">{p.categoryName}</td>
-                  <td className="py-4 text-right font-medium">CHF {p.price.toFixed(2)}</td>
-                  <td className={`py-4 text-right font-medium ${p.isLowStock ? 'text-warning' : ''}`}>
-                    {p.currentStock}
-                  </td>
-                  <td className="py-4 text-right text-sm text-muted">{p.lowStockThreshold}</td>
-                  <td className="py-4 text-center">
-                    {p.isLowStock ? (
-                      <span className="px-2 py-1 rounded text-xs uppercase tracking-wider bg-warning-soft text-warning">
-                        {t('products.lowStockLabel')}
-                      </span>
-                    ) : (
-                      <span className="px-2 py-1 rounded text-xs uppercase tracking-wider bg-success-soft text-success">
-                        {t('common.active')}
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-4 text-right">
-                    <button
-                      onClick={() => setEditingProduct(p)}
-                      className="inline-flex items-center gap-1 px-3 py-1 text-xs text-muted hover:text-current border border-current/20 hover:border-[var(--color-gold)] rounded transition-all"
-                    >
-                      <Pencil className="w-3 h-3" />
-                      {t('common.edit')}
-                    </button>
-                  </td>
+          <div className="overflow-x-auto max-h-[500px] overflow-y-auto pr-3">
+            <table className="w-full min-w-[800px]">
+              <thead className="sticky top-0 bg-[var(--color-cream)] dark:bg-[var(--color-ink)] z-10">
+                <tr className="border-b border-current/10">
+                  <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('common.name')}</th>
+                  <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('common.category')}</th>
+                  <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('common.price')}</th>
+                  <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.inStock')}</th>
+                  <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('products.threshold')}</th>
+                  <th className="text-center text-xs uppercase tracking-wider text-muted py-3">{t('common.status')}</th>
+                  <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('common.actions')}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredProducts.map(p => (
+                  <tr key={p.id} className="border-b border-current/5 hover:bg-current/[0.02]">
+                    <td className="py-4">
+                      <p className="font-medium">{p.name}</p>
+                      <p className="text-xs text-muted mt-1">{p.description}</p>
+                    </td>
+                    <td className="py-4 text-sm text-muted">{p.categoryName}</td>
+                    <td className="py-4 text-right font-medium">CHF {p.price.toFixed(2)}</td>
+                    <td className={`py-4 text-right font-medium ${p.isLowStock ? 'text-warning' : ''}`}>
+                      {p.currentStock}
+                    </td>
+                    <td className="py-4 text-right text-sm text-muted">{p.lowStockThreshold}</td>
+                    <td className="py-4 text-center">
+                      {p.isLowStock ? (
+                        <span className="px-2 py-1 rounded text-xs uppercase tracking-wider bg-warning-soft text-warning">
+                          {t('products.lowStockLabel')}
+                        </span>
+                      ) : (
+                        <span className="px-2 py-1 rounded text-xs uppercase tracking-wider bg-success-soft text-success">
+                          {t('common.active')}
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-4 text-right">
+                      <button
+                        onClick={() => setEditingProduct(p)}
+                        className="inline-flex items-center gap-1 px-3 py-1 text-xs text-muted hover:text-current border border-current/20 hover:border-[var(--color-gold)] rounded transition-all"
+                      >
+                        <Pencil className="w-3 h-3" />
+                        {t('common.edit')}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
@@ -273,7 +275,7 @@ function AddProductModal({ categories, isLoading, onSubmit, onClose }: {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div 
+      <div
         className="p-8 max-w-lg w-full rounded-xl border border-current/10 shadow-2xl max-h-[90vh] overflow-y-auto"
         style={{ background: 'var(--bg-modal)' }}
       >
@@ -328,7 +330,7 @@ function AddProductModal({ categories, isLoading, onSubmit, onClose }: {
             </select>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs uppercase tracking-wider text-muted mb-2">{t('common.price')} (CHF)</label>
               <input
@@ -409,7 +411,7 @@ function AddCategoryModal({ isLoading, onSubmit, onClose }: {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div 
+      <div
         className="p-8 max-w-md w-full rounded-xl border border-current/10 shadow-2xl"
         style={{ background: 'var(--bg-modal)' }}
       >
@@ -493,7 +495,7 @@ function EditProductModal({ product, isLoading, onSubmit, onClose }: {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div 
+      <div
         className="p-8 max-w-lg w-full rounded-xl border border-current/10 shadow-2xl max-h-[90vh] overflow-y-auto"
         style={{ background: 'var(--bg-modal)' }}
       >
@@ -541,7 +543,7 @@ function EditProductModal({ product, isLoading, onSubmit, onClose }: {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs uppercase tracking-wider text-muted mb-2">{t('common.price')} (CHF)</label>
               <input

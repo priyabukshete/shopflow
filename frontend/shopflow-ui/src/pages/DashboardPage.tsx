@@ -6,7 +6,7 @@ import { inventoryApi } from '../api/inventoryApi'
 
 export function DashboardPage() {
   const { t, i18n } = useTranslation()
-  
+
   const { data: report, isLoading } = useQuery({
     queryKey: ['daily-report'],
     queryFn: () => inventoryApi.getDailyReport(),
@@ -80,34 +80,36 @@ export function DashboardPage() {
           </div>
         </div>
 
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-current/10">
-              <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.product')}</th>
-              <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.delivered')}</th>
-              <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.produced')}</th>
-              <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.sold')}</th>
-              <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.wasted')}</th>
-              <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.inStock')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {report?.products
-              .filter(p => p.productName.toLowerCase().includes(searchTerm.toLowerCase()))
-              .map(p => (
-                <tr key={p.productId} className="border-b border-current/5 hover:bg-current/[0.02]">
-                  <td className="py-4 font-medium">{p.productName}</td>
-                  <td className="text-right text-success">{p.delivered > 0 ? `+${p.delivered}` : '—'}</td>
-                  <td className="text-right text-info">{p.produced > 0 ? `+${p.produced}` : '—'}</td>
-                  <td className="text-right text-warning">{p.sold > 0 ? `-${p.sold}` : '—'}</td>
-                  <td className="text-right" style={{ color: 'var(--color-terra)', opacity: 0.7 }}>
-                    {p.wasted > 0 ? `-${p.wasted}` : '—'}
-                  </td>
-                  <td className="text-right font-medium">{p.currentStock}</td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto max-h-[500px] overflow-y-auto pr-3">
+          <table className="w-full min-w-[600px]">
+            <thead className="sticky top-0 bg-[var(--color-cream)] dark:bg-[var(--color-ink)] z-10">
+              <tr className="border-b border-current/10">
+                <th className="text-left text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.product')}</th>
+                <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.delivered')}</th>
+                <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.produced')}</th>
+                <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.sold')}</th>
+                <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.wasted')}</th>
+                <th className="text-right text-xs uppercase tracking-wider text-muted py-3">{t('dashboard.inStock')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {report?.products
+                .filter(p => p.productName.toLowerCase().includes(searchTerm.toLowerCase()))
+                .map(p => (
+                  <tr key={p.productId} className="border-b border-current/5 hover:bg-current/[0.02]">
+                    <td className="py-4 font-medium">{p.productName}</td>
+                    <td className="text-right text-success">{p.delivered > 0 ? `+${p.delivered}` : '—'}</td>
+                    <td className="text-right text-info">{p.produced > 0 ? `+${p.produced}` : '—'}</td>
+                    <td className="text-right text-warning">{p.sold > 0 ? `-${p.sold}` : '—'}</td>
+                    <td className="text-right" style={{ color: 'var(--color-terra)', opacity: 0.7 }}>
+                      {p.wasted > 0 ? `-${p.wasted}` : '—'}
+                    </td>
+                    <td className="text-right font-medium">{p.currentStock}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
         {report && report.products.length === 0 && (
           <p className="text-center text-muted py-8">{t('dashboard.noProducts')}</p>
         )}
