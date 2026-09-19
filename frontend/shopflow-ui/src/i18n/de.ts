@@ -86,6 +86,8 @@ export const de = {
     totalPaid: 'Gesamt bezahlt',
     method: 'Methode',
     newOrder: 'Neue Bestellung',
+    print: 'Drucken',
+    downloadPdf: 'PDF',
   },
   products: {
     title: 'Produkte',

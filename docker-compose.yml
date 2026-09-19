@@ -1,0 +1,143 @@
+networks:
+  shopflow-network:
+    driver: bridge
+
+volumes:
+  sql-data:
+
+services:
+
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: shopflow-sql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      SA_PASSWORD: "Swiss@1991"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql-data:/var/opt/mssql
+    networks:
+      - shopflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Swiss@1991 -Q 'SELECT 1' -No"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 60s
+
+  kafka:
+    image: apache/kafka:3.8.0
+    container_name: shopflow-kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: "1"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      CLUSTER_ID: "5L6g3nShT-eMCtK--X86sw"
+    networks:
+      - shopflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics.sh --bootstrap-server localhost:9092 --list"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+
+  identity:
+    image: shopflow-identity:latest
+    container_name: shopflow-identity
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=sql-server,1433;Database=ShopFlow.Identity;User Id=sa;Password=Swiss@1991;TrustServerCertificate=True"
+      Jwt__Key: "Bpmqwe23@$^5lkj+nxGVY7jfiYX%klIveHFt8pRYw7MtNmLg1hqlcG7J8i1+5HKV9vw"
+      Jwt__Issuer: "shopflow.com"
+      Jwt__Audience: "shopflow.com"
+      Kafka__BootstrapServers: "kafka:9092"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    ports:
+      - "5228:8080"
+    networks:
+      - shopflow-network
+    depends_on:
+      sql-server:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+
+  inventory:
+    image: shopflow-inventory:latest
+    container_name: shopflow-inventory
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=sql-server,1433;Database=ShopFlow.Inventory;User Id=sa;Password=Swiss@1991;TrustServerCertificate=True"
+      Jwt__Key: "Bpmqwe23@$^5lkj+nxGVY7jfiYX%klIveHFt8pRYw7MtNmLg1hqlcG7J8i1+5HKV9vw"
+      Jwt__Issuer: "shopflow.com"
+      Jwt__Audience: "shopflow.com"
+      Kafka__BootstrapServers: "kafka:9092"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    ports:
+      - "5287:8080"
+    networks:
+      - shopflow-network
+    depends_on:
+      sql-server:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+
+  orders:
+    image: shopflow-orders:latest
+    container_name: shopflow-orders
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=sql-server,1433;Database=ShopFlow.Orders;User Id=sa;Password=Swiss@1991;TrustServerCertificate=True"
+      Jwt__Key: "Bpmqwe23@$^5lkj+nxGVY7jfiYX%klIveHFt8pRYw7MtNmLg1hqlcG7J8i1+5HKV9vw"
+      Jwt__Issuer: "shopflow.com"
+      Jwt__Audience: "shopflow.com"
+      Kafka__BootstrapServers: "kafka:9092"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    ports:
+      - "5003:8080"
+    networks:
+      - shopflow-network
+    depends_on:
+      sql-server:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+
+  notifications:
+    image: shopflow-notifications:latest
+    container_name: shopflow-notifications
+    environment:
+      Kafka__BootstrapServers: "kafka:9092"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    networks:
+      - shopflow-network
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  gateway:
+    image: shopflow-gateway:latest
+    container_name: shopflow-gateway
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+    ports:
+      - "8080:8080"
+    networks:
+      - shopflow-network
+    depends_on:
+      - identity
+      - inventory
+      - orders

@@ -91,6 +91,8 @@ export const en = {
     totalPaid: 'Total Paid',
     method: 'Method',
     newOrder: 'New Order',
+    print: 'Print',
+    downloadPdf: 'PDF',
   },
   // Products
   products: {
